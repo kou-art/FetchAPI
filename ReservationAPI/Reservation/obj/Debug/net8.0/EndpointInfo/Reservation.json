@@ -116,19 +116,19 @@
         "properties": {
           "date": {
             "type": "string",
-            "format": "date"
+            "nullable": true
+          },
+          "startTime": {
+            "type": "string",
+            "nullable": true
+          },
+          "endTime": {
+            "type": "string",
+            "nullable": true
           },
           "roomName": {
             "type": "string",
             "nullable": true
-          },
-          "startHour": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "duration": {
-            "type": "integer",
-            "format": "int32"
           },
           "reservedBy": {
             "type": "string",

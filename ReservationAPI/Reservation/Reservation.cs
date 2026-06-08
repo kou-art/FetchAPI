@@ -4,13 +4,11 @@ public class Reservation
 {
     public int Id { get; set; }
 
-    public DateOnly Date { get; set; }
+    public DateTime StartAt { get; set; }
 
-    public string RoomName { get; set; } = string.Empty;
+    public DateTime EndAt { get; set; }
 
-    public int StartHour { get; set; }
+    public string RoomName { get; set; } = "";
 
-    public int Duration { get; set; }
-
-    public string ReservedBy { get; set; } = string.Empty;
+    public string ReservedBy { get; set; } = "";
 }

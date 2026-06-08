@@ -34,11 +34,22 @@ public class ReservationController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] CreateReservationDto dto)
     {
+        var startAt = DateTime.Parse($"{dto.Date} {dto.StartTime}");
+
+        var endAt = DateTime.Parse($"{dto.Date} {dto.EndTime}");
+
+        if (startAt >= endAt)
+        {
+            return BadRequest(new
+            {
+                message = "終了時刻は開始時刻より後にしてください。"
+            });
+        }
         bool isOverlapped = await _db.Reservations.AnyAsync(r =>
-                            r.Date == dto.Date &&
                             r.RoomName == dto.RoomName &&
-                            dto.StartHour < r.StartHour + r.Duration &&
-                            dto.StartHour + dto.Duration > r.StartHour);
+                            startAt < r.EndAt &&
+                            endAt > r.StartAt
+                            );
         if (isOverlapped)
         {
             // 400エラーとエラーメッセージを返して追加をブロックする
@@ -46,11 +57,10 @@ public class ReservationController : ControllerBase
         }
         Reservation newReservation = new()
         {
-            Date = dto.Date,
             RoomName = dto.RoomName,
-            StartHour = dto.StartHour,
-            Duration = dto.Duration,
-            ReservedBy = dto.ReservedBy
+            ReservedBy = dto.ReservedBy,
+            StartAt = startAt,
+            EndAt = endAt
         };
 
         await _db.Reservations.AddAsync(newReservation);
@@ -81,4 +91,10 @@ public class ReservationController : ControllerBase
 
 // 日付（Date）フィールドを追加したデータ構造
 
-public record CreateReservationDto(DateOnly Date, string RoomName, int StartHour, int Duration, string ReservedBy);
+public record CreateReservationDto(
+    string Date,
+    string StartTime,
+    string EndTime,
+    string RoomName,
+    string ReservedBy
+);

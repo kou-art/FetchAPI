@@ -1,10 +1,3 @@
-const startHourSelect = document.getElementById("startHour");
-let options = "";
-for (let i = 9; i <= 18; i++) {
-    options += `<option value="${i}">${i}:00</option>`;
-}
-startHourSelect.innerHTML = options;
-
 const formattedToday = new Date().toISOString().split('T')[0];;
 // min属性に今日の日付を設定する
 document.getElementById('bookingDate').min = formattedToday;
@@ -56,9 +49,13 @@ function filterDisplay() {
     const tbody =
         document.getElementById('reservation-list');
     const filteredData =
-        allReservations.filter(
-            item => item.date === targetDate
-        );
+    allReservations.filter(item => {
+
+        const date =
+            item.startAt.split('T')[0];
+
+        return date === targetDate;
+    });
     if (filteredData.length === 0) {
         tbody.innerHTML = `
             <tr>
@@ -70,29 +67,40 @@ function filterDisplay() {
         return;
     }
     tbody.innerHTML = filteredData.map(item => {
-        const endHour =
-            item.startHour + item.duration;
-        return `
-            <tr>
-                <td>${item.date}</td>
-                <td>
-                    <strong>${item.roomName}</strong>
-                </td>
-                <td>
-                    ${item.startHour}:00 -
-                    ${endHour}:00
-                    (${item.duration}時間)
-                </td>
-                <td>${item.reservedBy}</td>
-                <td>
-                    <button
-                        class="btn btn-danger"
-                        onclick="deleteReservation(${item.id})">
-                        削除
-                    </button>
-                </td>
-            </tr>
-        `;
+
+    const startAt = new Date(item.startAt);
+    const endAt = new Date(item.endAt);
+
+    const date =
+        startAt.toISOString().split('T')[0];
+
+    const startTime =
+        startAt.toLocaleTimeString(
+            [],
+            { hour: '2-digit', minute: '2-digit' }
+        );
+
+    const endTime =
+        endAt.toLocaleTimeString(
+            [],
+            { hour: '2-digit', minute: '2-digit' }
+        );
+
+    return `
+        <tr>
+            <td>${date}</td>
+            <td><strong>${item.roomName}</strong></td>
+            <td>${startTime} - ${endTime}</td>
+            <td>${item.reservedBy}</td>
+            <td>
+                <button
+                    class="btn btn-danger"
+                    onclick="deleteReservation(${item.id})">
+                    削除
+                </button>
+            </td>
+        </tr>
+    `;
     }).join('');
 }
 // =====================
@@ -117,13 +125,18 @@ document.getElementById('booking-form')
     .addEventListener('submit',
         async (e) => {
             e.preventDefault();
+            
             const payload = {
-                date:document.getElementById('bookingDate').value,
-                roomName:document.getElementById('roomName').value,
-                startHour:parseInt(document.getElementById('startHour').value),
-                duration:parseInt(document.getElementById('duration').value),
-                reservedBy:document.getElementById('reservedBy').value
+                date: document.getElementById('bookingDate').value,
+                roomName: document.getElementById('roomName').value,
+                startTime: document.getElementById('startTime').value,
+                endTime: document.getElementById('endTime').value,
+                reservedBy: document.getElementById('reservedBy').value
             };
+            if (payload.startTime >= payload.endTime) {
+                showError("終了時刻は開始時刻より後にしてください。");
+                return;
+            }
             try {
                 const response = await fetch(API_URL,
                         {

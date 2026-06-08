@@ -11,7 +11,7 @@ using Reservation.Data;
 namespace Reservation.Migrations
 {
     [DbContext(typeof(ReservationDbContext))]
-    [Migration("20260607053751_InitialCreate")]
+    [Migration("20260608132655_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -26,11 +26,8 @@ namespace Reservation.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("Date")
+                    b.Property<DateTime>("EndAt")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ReservedBy")
                         .IsRequired()
@@ -40,8 +37,8 @@ namespace Reservation.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("StartHour")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateTime>("StartAt")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

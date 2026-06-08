@@ -17,10 +17,9 @@ namespace Reservation.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Date = table.Column<DateOnly>(type: "TEXT", nullable: false),
+                    StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     RoomName = table.Column<string>(type: "TEXT", nullable: false),
-                    StartHour = table.Column<int>(type: "INTEGER", nullable: false),
-                    Duration = table.Column<int>(type: "INTEGER", nullable: false),
                     ReservedBy = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
