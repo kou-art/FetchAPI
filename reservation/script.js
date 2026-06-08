@@ -35,7 +35,13 @@ function showError(message) {
 // 初期化
 // =====================
 function initApp() {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" ,
+        year: "numeric",  // 年を数字で（2026）
+        month: "2-digit", // 月を2桁で（06）
+        day: "2-digit"    // 日を2桁で（08）
+})
+    .replaceAll('/', '-');
+    console.log(today);
     document.getElementById('display-date').value = today;
     document.getElementById('bookingDate').value = today;
     loadReservations();
@@ -51,10 +57,17 @@ function filterDisplay() {
     const filteredData =
     allReservations.filter(item => {
 
-        const date =
-            item.startAt.split('T')[0];
+        const jstDate = new Date(item.startAt)
+            .toLocaleDateString("ja-JP", {
+                timeZone: "Asia/Tokyo",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit"
+            })
+            .replaceAll('/', '-'); // スラッシュをハイフンに変換
 
-        return date === targetDate;
+        // 日本時間同士で比較する
+        return jstDate === targetDate;
     });
     if (filteredData.length === 0) {
         tbody.innerHTML = `
@@ -71,8 +84,12 @@ function filterDisplay() {
     const startAt = new Date(item.startAt);
     const endAt = new Date(item.endAt);
 
-    const date =
-        startAt.toISOString().split('T')[0];
+    const date = startAt.toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" ,
+        year: "numeric",  // 年を数字で（2026）
+        month: "2-digit", // 月を2桁で（06）
+        day: "2-digit"    // 日を2桁で（08）
+})
+    .replaceAll('/', '-');;
 
     const startTime =
         startAt.toLocaleTimeString(
