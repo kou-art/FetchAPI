@@ -18,17 +18,13 @@ public class Program
         });
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowFetch", policy =>
-            {
-                policy
-                    .WithOrigins(
-                        "http://127.0.0.1:5500",
-                        "http://localhost:5500"
-                    )
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
-            });
+            options.AddPolicy("AllowAll",
+                policy =>
+                {
+                    policy.AllowAnyOrigin()   // Ç«ÇÃPCÇ©ÇÁÇ≈Ç‡ãñâ¬
+                          .AllowAnyHeader()   // Ç«ÇÒÇ»ÉwÉbÉ_Å[Ç≈Ç‡ãñâ¬
+                          .AllowAnyMethod();  // GETÇ‚POSTÇ»Ç«âΩÇ≈Ç‡ãñâ¬
+                });
         });
         builder.Services.AddDbContext<ReservationDbContext>(
         options =>
@@ -50,7 +46,7 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-        app.UseCors("AllowFetch");
+        app.UseCors("AllowAll");
         app.UseHttpsRedirection();
 
         app.UseAuthorization();

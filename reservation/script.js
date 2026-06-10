@@ -3,9 +3,9 @@ const formattedToday = new Date().toISOString().split('T')[0];;
 document.getElementById('bookingDate').min = formattedToday;
 
         const connection = new signalR.HubConnectionBuilder()
-.withUrl("https://localhost:7209/reservationHub")
+.withUrl("https://192.168.0.46:5113/reservationHub")
 .build();
-const API_URL = 'https://localhost:7209/api/reservation';
+const API_URL = 'https://192.168.0.46:5113/api/reservation';
 let allReservations = [];
 // =====================
 // SignalR
